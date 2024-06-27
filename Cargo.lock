@@ -3,10 +3,27 @@
 version = 3
 
 [[package]]
+name = "anyhow"
+version = "1.0.86"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b3d1d046238990b9cf5bcde22a3fb3584ee5cf65fb2765f454ed428c7a0063da"
+
+[[package]]
 name = "autocfg"
 version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
+
+[[package]]
+name = "bin"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chook",
+ "shim",
+ "tempfile",
+ "types",
+]
 
 [[package]]
 name = "bincode"
@@ -164,6 +181,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "shim"
+version = "0.1.0"
+dependencies = [
+ "chook-shim",
+ "types",
+]
+
+[[package]]
 name = "syn"
 version = "2.0.68"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -184,6 +209,14 @@ dependencies = [
  "fastrand",
  "rustix",
  "windows-sys",
+]
+
+[[package]]
+name = "types"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]

@@ -1,0 +1,15 @@
+[package]
+name = "types"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/shell-pool/chook"
+authors = ["Ethan Pailes <pailes@google.com>"]
+readme = "README.md"
+description = "example shared types crate"
+license = "Apache-2.0"
+keywords = ["subprocess", "hook", "example"]
+rust-version = "1.74"
+
+[dependencies]
+serde = "1" # serialization traits
+serde_derive = "1" # serialization traits

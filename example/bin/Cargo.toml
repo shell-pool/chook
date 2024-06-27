@@ -1,0 +1,20 @@
+[package]
+name = "bin"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/shell-pool/chook"
+authors = ["Ethan Pailes <pailes@google.com>"]
+readme = "README.md"
+description = "example user of chook"
+license = "Apache-2.0"
+keywords = ["subprocess", "hook", "example"]
+rust-version = "1.74"
+
+[build-dependencies]
+shim = { path = "../shim" }
+
+[dependencies]
+anyhow = "1"
+tempfile = "3" # RAII tmp files (for the control socket)
+chook = { path = "../../chook" }
+types = { path = "../types" }

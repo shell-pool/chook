@@ -1,9 +1,12 @@
 
 use std::{
+    thread,
+    time,
+    ffi::OsStr,
     io::{Read, Write},
     marker::PhantomData,
     os::unix::net::UnixStream,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::Command,
 };
 
@@ -75,18 +78,18 @@ impl<ArgT, RetT> Hook<ArgT, RetT>
     /// WARNING: There is no type checking making sure that
     /// ArgT and RetT match up with the ArgT and RetT
     /// compiled into hooklib, so be sure that they match up.
-    pub fn new(
+    pub fn new<P: AsRef<Path> + AsRef<OsStr>>(
         cmd: &mut Command,
-        hooklib: PathBuf,
+        hooklib: P,
     ) -> Result<Self, ChookError> {
         Self::new_with_log_mode(cmd, hooklib, LogMode::None)
     }
 
     // Create a chook handle with a custom log mode for debugging
     // the shim.
-    pub fn new_with_log_mode(
+    pub fn new_with_log_mode<P: AsRef<Path> + AsRef<OsStr>>(
         cmd: &mut Command,
-        hooklib: PathBuf,
+        hooklib: P,
         log_mode: LogMode,
     ) -> Result<Self, ChookError> {
         // TODO: will this actually work, or will it get injected
@@ -122,8 +125,27 @@ impl<ArgT, RetT> Hook<ArgT, RetT>
         where ArgT: Serialize,
               for<'de> RetT: Deserialize<'de>
     {
-        let mut stream = UnixStream::connect(&self.control_socket)
-            .map_err(|e| cerr!("dialing control socket: {:?}", e))?;
+        // The user might call the shim immediately after launching the program,
+        // in which case the control socket might not be up yet. Use an
+        // exponential backoff to poll until the control socket comes up.
+        let mut stream = None;
+        // sum(10*(2**x) for x in range(9)) = 5110 ms = ~5 s of max wait
+        let mut sleep_dur = time::Duration::from_millis(10);
+        for _ in 0..9 {
+            stream = match UnixStream::connect(&self.control_socket) {
+                Ok(s) => Some(s),
+                Err(_) => {
+                    thread::sleep(sleep_dur);
+                    sleep_dur *= 2;
+                    continue;
+                }
+            };
+            break;
+        }
+        let mut stream = match stream {
+            Some(s) => s,
+            None => return Err(cerr!("could not dial control socket")),
+        };
 
         // write the arg
         let arg_buf = bincode::serialize(&arg)

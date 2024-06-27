@@ -3,5 +3,5 @@ resolver = "2"
 
 members = [
     "chook",
-    "chook-shim",
+    "chook-shim", "example/bin", "example/shim", "example/types",
 ]

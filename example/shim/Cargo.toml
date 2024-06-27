@@ -1,0 +1,19 @@
+[package]
+name = "shim"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/shell-pool/chook"
+authors = ["Ethan Pailes <pailes@google.com>"]
+readme = "README.md"
+description = "example shim shared library"
+license = "Apache-2.0"
+keywords = ["subprocess", "hook", "example"]
+rust-version = "1.74"
+
+[lib]
+name = "chookexampleshim"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+chook-shim = { path = "../../chook-shim" }
+types = { path = "../types" }
