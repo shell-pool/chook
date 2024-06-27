@@ -1,0 +1,26 @@
+[package]
+name = "chook-shim"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/shell-pool/chook"
+authors = ["Ethan Pailes <pailes@google.com>"]
+readme = "README.md"
+description = '''
+chook-shim is a library crate that users of the chook
+crate need to use in order to make their hook shim for
+injection into subprocesses. It itself is a normal rust
+crate, but crates which depend on it need to be set up
+to produce .so files.
+'''
+license = "Apache-2.0"
+keywords = ["subprocess", "hook"]
+rust-version = "1.74"
+
+[dependencies]
+serde = "1" # serialization traits
+bincode = "1" # serialization codec for our little RPC protocol
+byteorder = "1" # endianness
+
+[dependencies.nix]
+version = "0.28"
+features = ["socket", "user", "process"]

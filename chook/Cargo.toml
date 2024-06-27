@@ -1,0 +1,25 @@
+[package]
+name = "chook"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/shell-pool/chook"
+authors = ["Ethan Pailes <pailes@google.com>"]
+readme = "README.md"
+description = '''
+chook allows injecting code into child processes.
+It provides the wrapper interface for injecting
+libraries built with chook-shim into subprocesses.
+'''
+license = "Apache-2.0"
+keywords = ["subprocess", "hook"]
+rust-version = "1.74"
+
+[dependencies]
+serde = "1" # serialization traits
+bincode = "1" # serialization codec for our little RPC protocol
+byteorder = "1" # endianness
+tempfile = "3" # RAII tmp files (for the control socket)
+
+[dependencies.nix]
+version = "0.28"
+features = ["socket", "user", "process"]
